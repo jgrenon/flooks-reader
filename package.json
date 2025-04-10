@@ -9,8 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^3.15.1",
+    "@emotion/react": "^11.14.0",
+    "@prisma/client": "^6.6.0",
+    "@themaximalist/ai.js": "^0.2.7",
+    "next": "15.3.0",
+    "next-themes": "^0.4.6",
+    "openai": "^4.93.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.3.0"
+    "react-icons": "^5.5.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.6.0"
   }
 }

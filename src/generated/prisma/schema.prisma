@@ -1,0 +1,215 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-ini
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int              @id @default(autoincrement())
+  email      String           @unique
+  password   String
+  name       String?
+  universes  UniverseMember[]
+  scenes     Scene[]
+  storylines Storyline[]
+  sessions   Session[]
+}
+
+enum Visibility {
+  PUBLIC
+  MEMBERSHIP
+}
+
+model UniverseMember {
+  user       User     @relation(fields: [userId], references: [id])
+  universe   Universe @relation(fields: [universeId], references: [id])
+  userId     Int
+  universeId Int
+
+  @@id([userId, universeId])
+}
+
+model Universe {
+  id          Int              @id @default(autoincrement())
+  name        String
+  description String
+  contextDB   String
+  visibility  Visibility       @default(PUBLIC)
+  sources     UniverseSource[]
+  members     UniverseMember[]
+  scenes      Scene[]
+  sessions    Session[]
+}
+
+enum FileFormat {
+  PDF
+}
+
+model UniverseSource {
+  id         Int        @id @default(autoincrement())
+  format     FileFormat @default(PDF)
+  path       String
+  universe   Universe   @relation(fields: [universeId], references: [id])
+  universeId Int
+}
+
+enum SceneMood {
+  JOYFUL
+  NERVOUS
+  PEACEFUL
+  MELANCHOLY
+  PANICKED
+  PENSIVE
+  RESENTFUL
+  ANGRY
+  HOPEFUL
+  LONELY
+  NOSTALGIC
+  ANXIOUS
+  CALM
+  SENTIMENTAL
+  CHEERFUL
+  UNEASY
+  HOPELESS
+  STRESSED
+  SORROWFUL
+  OPTIMISTIC
+}
+
+enum SceneGenre {
+  FANTASY
+  SCIFI
+  DYSTOPIAN
+  ACTION
+  MYSTERY
+  HORROR
+  THRILLER
+  HISTORICAL_FICTION
+  ROMANCE
+  CONTEMPORARY_FICTION
+  YOUNG_ADULT
+  CHILDREN
+  BIOGRAPHY
+  ART
+  FOOD_DRINKS
+  SELF_HELP
+  HISTORY
+  TRAVEL
+  TRUE_CRIME
+  HUMOR
+  ESSAYS
+  HOWTO
+  SPIRITUALITY
+  SOCIAL
+  FAMILY
+  SCIENCE_TECH
+}
+
+model Scene {
+  id         Int           @id @default(autoincrement())
+  universe   Universe      @relation(fields: [universeId], references: [id])
+  universeId Int
+  title      String
+  author     User          @relation(fields: [authorId], references: [id])
+  authorId   Int
+  anchors    SceneAnchor[]
+  content    String
+  mood       SceneMood
+  genre      SceneGenre
+  lang       String        @default("en")
+  prompt     String?
+  fromPaths  StoryPath[]   @relation("fromPaths")
+  toPaths    StoryPath[]   @relation("toPaths")
+  parentId   Int?          @unique
+  parent     Scene?        @relation("variant", fields: [parentId], references: [id])
+  variants   Scene[]       @relation("variant")
+  sessions   Session[]
+}
+
+enum AnchorType {
+  PLACE
+  ACTOR
+  OBJECT
+  ORGANIZATION
+  MOMENT
+}
+
+model SceneAnchor {
+  tag           String           @id
+  type          AnchorType
+  name          String
+  description   Scene?           @relation(fields: [descriptionId], references: [id])
+  descriptionId Int?
+  timeline      Storyline?       @relation(fields: [timelineId], references: [id])
+  timelineId    Int?             @unique
+  parentTag     String           @unique
+  parent        SceneAnchor?     @relation("parent", fields: [parentTag], references: [tag])
+  children      SceneAnchor[]    @relation("parent")
+  sessions      FavoriteAnchor[]
+
+  @@index([name])
+}
+
+model StoryPath {
+  id         Int             @id @default(autoincrement())
+  from       Scene           @relation("fromPaths", fields: [fromId], references: [id])
+  fromId     Int
+  to         Scene           @relation("toPaths", fields: [toId], references: [id])
+  toId       Int
+  storylines StorylinePath[]
+}
+
+model Storyline {
+  id          Int             @id @default(autoincrement())
+  title       String
+  description String
+  owner       User            @relation(fields: [ownerId], references: [id])
+  storyPaths  StorylinePath[]
+  ownerId     Int
+  anchor      SceneAnchor?
+}
+
+model StorylinePath {
+  storyline   Storyline @relation(fields: [storyLineId], references: [id])
+  storyLineId Int
+  path        StoryPath @relation(fields: [pathId], references: [id])
+  pathId      Int
+  seq         Int       @default(0)
+
+  @@id([storyLineId, pathId])
+}
+
+model Session {
+  id          String           @id
+  reader      User             @relation(fields: [readerId], references: [id])
+  readerId    Int
+  createdAt   DateTime
+  lastOpened  DateTime
+  lastScene   Scene?           @relation(fields: [lastSceneId], references: [id])
+  lastSceneId Int?
+  universe    Universe?        @relation(fields: [universeId], references: [id])
+  universeId  Int?
+  moods       SceneMood[]
+  languages   String[]         @default(["en"])
+  favorites   FavoriteAnchor[]
+}
+
+model FavoriteAnchor {
+  anchor         SceneAnchor? @relation(fields: [sceneAnchorTag], references: [tag])
+  session        Session?     @relation(fields: [sessionId], references: [id])
+  anchorId       Int
+  sessionId      String
+  sceneAnchorTag String?
+
+  @@id([sessionId, anchorId])
+}
