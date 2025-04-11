@@ -24,9 +24,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Provider>
-          <Flex flexDir="column" bg="bg.subtle" color="fg" h="100vh" overflow="clip">
-            <Flex as="header" bg="bg.inverted" p={3}>
-              <Heading size="2xl" color="fg.inverted">
+          <Flex flexDir="column" color="fg" h="100vh" overflow="clip">
+            <Flex as="header" bg={{ base: "gray.600", _dark: "gray.800" }} p={3}>
+              <Heading size="2xl" color={{ base: "gray.50", _dark: "gray.200" }}>
                 FLOOKS
               </Heading>
               <Spacer />
