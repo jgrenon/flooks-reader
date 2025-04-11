@@ -1,5 +1,4 @@
-import { Avatar } from "@/components/ui/avatar";
-import { Box, Flex, Heading, Spacer, Text, VStack, Link as UILink, Center, HStack, Separator } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text, VStack, Link as UILink, Center, HStack, Separator } from "@chakra-ui/react";
 import Link from "next/link";
 
 function Universe({ title, cover, id }) {
@@ -27,41 +26,32 @@ function Universe({ title, cover, id }) {
 
 export default function Home() {
   return (
-    <Flex flexDir="column" bg="bg.subtle" color="fg" h="100vh" overflow="clip">
-      <Flex as="header" bg="bg.inverted" color="fg.inverted" p={3}>
-        <Heading size="2xl">FLOOKS</Heading>
-        <Spacer />
-        <Avatar size="sm" />
-      </Flex>
-      <Flex flexGrow={1} flexDir="column" overflowY="auto" maxH="99vh">
-        <VStack p={5} bg="bg.subtle">
-          <Heading w="full">My Sessions</Heading>
-          <HStack w="full" as="main" p={3}>
-            <Universe title="Lovecraft World" cover="/lovecraft-universe.png" />
-          </HStack>
-        </VStack>
-        <Separator />
-        <VStack p={5} bg="bg.subtle">
-          <Heading w="full">Available Universes</Heading>
-          <HStack w="full" as="main" p={3}>
-            <Universe title="Lovecraft World" cover="/lovecraft-universe.png" />
-            <Universe title="New Universe" />
-          </HStack>
-        </VStack>
-        <Separator />
-        <VStack p={5} bg="bg.subtle">
-          <Heading w="full">Popular Stories</Heading>
-          <HStack w="full" as="main" p={3}>
-            <Universe title="The Dark Lake" cover="/dark-lake.png" />
-            <Universe title="New Storyline" />
-          </HStack>
-        </VStack>
-      </Flex>
-      <Flex as="footer">
-        <Text color="fg.subtle" fontSize="xs" p={1}>
-          &copy; 2025 Flooks Corp Inc. All rights reserved
+    <Flex flexGrow={1} flexDir="column" overflowY="auto" maxH="99vh">
+      <VStack p={5} bg="bg.subtle">
+        <Heading w="full">My Sessions</Heading>
+        <HStack w="full" as="main" p={3}>
+          <Universe title="Lovecraft" cover="/lovecraft-universe.png" />
+        </HStack>
+      </VStack>
+      <Separator />
+      <VStack p={5} bg="bg.subtle">
+        <Heading w="full">Available Universes</Heading>
+        <HStack w="full" as="main" p={3}>
+          <Universe title="Lovecraft" cover="/lovecraft-universe.png" />
+          <Universe title="New Universe" />
+        </HStack>
+      </VStack>
+      <Separator />
+      <VStack p={5} bg="bg.subtle">
+        <Heading w="full">Popular Stories</Heading>
+        <Text w="full" fontSize="sm">
+          Select one of the most popular storylines on Flooks
         </Text>
-      </Flex>
+        <HStack w="full" as="main" p={3}>
+          <Universe title="The Dark Lake" cover="/dark-lake.png" />
+          <Universe title="New Storyline" />
+        </HStack>
+      </VStack>
     </Flex>
   );
 }
