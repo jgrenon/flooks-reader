@@ -15,14 +15,38 @@ datasource db {
 }
 
 model User {
-  id         Int              @id @default(autoincrement())
-  email      String           @unique
-  password   String
-  name       String?
-  universes  UniverseMember[]
-  scenes     Scene[]
-  storylines Storyline[]
-  sessions   Session[]
+  id              String           @id @default(cuid())
+  name            String?
+  email           String           @unique
+  password        String
+  emailVerified   DateTime?
+  image           String?
+  sessions        Session[]
+  universes       UniverseMember[]
+  scenes          Scene[]
+  storylines      Storyline[]
+  readingSessions ReadingSession[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
 }
 
 enum Visibility {
@@ -33,7 +57,7 @@ enum Visibility {
 model UniverseMember {
   user       User     @relation(fields: [userId], references: [id])
   universe   Universe @relation(fields: [universeId], references: [id])
-  userId     Int
+  userId     String
   universeId Int
 
   @@id([userId, universeId])
@@ -48,7 +72,7 @@ model Universe {
   sources     UniverseSource[]
   members     UniverseMember[]
   scenes      Scene[]
-  sessions    Session[]
+  sessions    ReadingSession[]
 }
 
 enum FileFormat {
@@ -119,24 +143,24 @@ enum SceneGenre {
 }
 
 model Scene {
-  id         Int           @id @default(autoincrement())
-  universe   Universe      @relation(fields: [universeId], references: [id])
+  id         Int              @id @default(autoincrement())
+  universe   Universe         @relation(fields: [universeId], references: [id])
   universeId Int
   title      String
-  author     User          @relation(fields: [authorId], references: [id])
-  authorId   Int
+  author     User             @relation(fields: [authorId], references: [id])
+  authorId   String
   anchors    SceneAnchor[]
   content    String
   mood       SceneMood
   genre      SceneGenre
-  lang       String        @default("en")
+  lang       String           @default("en")
   prompt     String?
-  fromPaths  StoryPath[]   @relation("fromPaths")
-  toPaths    StoryPath[]   @relation("toPaths")
-  parentId   Int?          @unique
-  parent     Scene?        @relation("variant", fields: [parentId], references: [id])
-  variants   Scene[]       @relation("variant")
-  sessions   Session[]
+  fromPaths  StoryPath[]      @relation("fromPaths")
+  toPaths    StoryPath[]      @relation("toPaths")
+  parentId   Int?             @unique
+  parent     Scene?           @relation("variant", fields: [parentId], references: [id])
+  variants   Scene[]          @relation("variant")
+  sessions   ReadingSession[]
 }
 
 enum AnchorType {
@@ -179,7 +203,7 @@ model Storyline {
   description String
   owner       User            @relation(fields: [ownerId], references: [id])
   storyPaths  StorylinePath[]
-  ownerId     Int
+  ownerId     String
   anchor      SceneAnchor?
 }
 
@@ -193,10 +217,10 @@ model StorylinePath {
   @@id([storyLineId, pathId])
 }
 
-model Session {
+model ReadingSession {
   id          String           @id
   reader      User             @relation(fields: [readerId], references: [id])
-  readerId    Int
+  readerId    String
   createdAt   DateTime
   lastOpened  DateTime
   lastScene   Scene?           @relation(fields: [lastSceneId], references: [id])
@@ -210,8 +234,8 @@ model Session {
 }
 
 model FavoriteAnchor {
-  anchor         SceneAnchor? @relation(fields: [sceneAnchorTag], references: [tag])
-  session        Session?     @relation(fields: [sessionId], references: [id])
+  anchor         SceneAnchor?    @relation(fields: [sceneAnchorTag], references: [tag])
+  session        ReadingSession? @relation(fields: [sessionId], references: [id])
   anchorId       Int
   sessionId      String
   sceneAnchorTag String?
@@ -220,12 +244,12 @@ model FavoriteAnchor {
 }
 
 model Transition {
-  id          Int       @id @default(autoincrement())
-  session     Session   @relation(fields: [sessionId], references: [id])
+  id          Int            @id @default(autoincrement())
+  session     ReadingSession @relation(fields: [sessionId], references: [id])
   sessionId   String
-  storyPath   StoryPath @relation(fields: [storyPathId], references: [id])
+  storyPath   StoryPath      @relation(fields: [storyPathId], references: [id])
   storyPathId Int
   rating      Int
-  occurences  Int       @default(1)
+  occurences  Int            @default(1)
   ts          DateTime
 }

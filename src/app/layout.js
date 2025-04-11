@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Flex, Heading, Spacer, Text } from "@chakra-ui/react";
 import { Avatar } from "@/components/ui/avatar";
 import { ColorModeButton } from "@/components/ui/color-mode";
+import { AppBar } from "@/components/app-bar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,14 +26,7 @@ export default function RootLayout({ children }) {
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Provider>
           <Flex flexDir="column" color="fg" h="100vh" overflow="clip">
-            <Flex as="header" bg={{ base: "gray.600", _dark: "gray.800" }} p={3}>
-              <Heading size="2xl" color={{ base: "gray.50", _dark: "gray.200" }}>
-                FLOOKS
-              </Heading>
-              <Spacer />
-              <Avatar size="sm" />
-              <ColorModeButton />
-            </Flex>
+            <AppBar />
             {children}
             <Flex as="footer">
               <Text color="fg.subtle" fontSize="xs" p={1}>

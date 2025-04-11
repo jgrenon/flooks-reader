@@ -119,9 +119,53 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
+  name: 'name',
   email: 'email',
-  password: 'password',
-  name: 'name'
+  emailVerified: 'emailVerified',
+  image: 'image',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AccountScalarFieldEnum = {
+  userId: 'userId',
+  type: 'type',
+  provider: 'provider',
+  providerAccountId: 'providerAccountId',
+  refresh_token: 'refresh_token',
+  access_token: 'access_token',
+  expires_at: 'expires_at',
+  token_type: 'token_type',
+  scope: 'scope',
+  id_token: 'id_token',
+  session_state: 'session_state',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  sessionToken: 'sessionToken',
+  userId: 'userId',
+  expires: 'expires',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VerificationTokenScalarFieldEnum = {
+  identifier: 'identifier',
+  token: 'token',
+  expires: 'expires'
+};
+
+exports.Prisma.AuthenticatorScalarFieldEnum = {
+  credentialID: 'credentialID',
+  userId: 'userId',
+  providerAccountId: 'providerAccountId',
+  credentialPublicKey: 'credentialPublicKey',
+  counter: 'counter',
+  credentialDeviceType: 'credentialDeviceType',
+  credentialBackedUp: 'credentialBackedUp',
+  transports: 'transports'
 };
 
 exports.Prisma.UniverseMemberScalarFieldEnum = {
@@ -185,7 +229,7 @@ exports.Prisma.StorylinePathScalarFieldEnum = {
   seq: 'seq'
 };
 
-exports.Prisma.SessionScalarFieldEnum = {
+exports.Prisma.ReadingSessionScalarFieldEnum = {
   id: 'id',
   readerId: 'readerId',
   createdAt: 'createdAt',
@@ -200,6 +244,15 @@ exports.Prisma.FavoriteAnchorScalarFieldEnum = {
   anchorId: 'anchorId',
   sessionId: 'sessionId',
   sceneAnchorTag: 'sceneAnchorTag'
+};
+
+exports.Prisma.TransitionScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  storyPathId: 'storyPathId',
+  rating: 'rating',
+  occurences: 'occurences',
+  ts: 'ts'
 };
 
 exports.Prisma.SortOrder = {
@@ -222,7 +275,10 @@ exports.Visibility = exports.$Enums.Visibility = {
 };
 
 exports.FileFormat = exports.$Enums.FileFormat = {
-  PDF: 'PDF'
+  PDF: 'PDF',
+  PLAINTEXT: 'PLAINTEXT',
+  DOCX: 'DOCX',
+  MARKDOWN: 'MARKDOWN'
 };
 
 exports.SceneMood = exports.$Enums.SceneMood = {
@@ -287,6 +343,10 @@ exports.AnchorType = exports.$Enums.AnchorType = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Account: 'Account',
+  Session: 'Session',
+  VerificationToken: 'VerificationToken',
+  Authenticator: 'Authenticator',
   UniverseMember: 'UniverseMember',
   Universe: 'Universe',
   UniverseSource: 'UniverseSource',
@@ -295,8 +355,9 @@ exports.Prisma.ModelName = {
   StoryPath: 'StoryPath',
   Storyline: 'Storyline',
   StorylinePath: 'StorylinePath',
-  Session: 'Session',
-  FavoriteAnchor: 'FavoriteAnchor'
+  ReadingSession: 'ReadingSession',
+  FavoriteAnchor: 'FavoriteAnchor',
+  Transition: 'Transition'
 };
 
 /**
